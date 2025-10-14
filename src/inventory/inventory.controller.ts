@@ -8,33 +8,41 @@ import {
   Param,
   ParseIntPipe,
   Get,
+  Query,
 } from '@nestjs/common';
 import { InventoryService } from './inventory.service';
 import { AdjustInventoryDto } from './dto/adjust-inventory.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { MovementType } from './entities/inventory_movement.entity';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
 @Controller('inventory')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@SetMetadata('roles', ['Manager', 'Employee']) // 👥 Ambos roles pueden acceder
+@SetMetadata('roles', ['Manager', 'Employee'])
 export class InventoryController {
   constructor(private readonly inventoryService: InventoryService) {}
 
-  // --- Endpoints para consultar el stock ---
   @Get('branch/:branchId')
-  getBranchInventory(@Param('branchId', ParseIntPipe) branchId: number, @Request() req) {
+  getBranchInventory(
+    @Param('branchId', ParseIntPipe) branchId: number,
+    @Request() req,
+  ) {
     return this.inventoryService.getInventoryForBranch(branchId, req.user);
   }
 
-  // --- Endpoints para modificar el stock ---
   @Post('branch/:branchId/inbound')
   inbound(
     @Param('branchId', ParseIntPipe) branchId: number,
     @Body() adjustDto: AdjustInventoryDto,
     @Request() req,
   ) {
-    return this.inventoryService.adjustInventory(branchId, adjustDto, req.user, MovementType.INBOUND);
+    return this.inventoryService.adjustInventory(
+      branchId,
+      adjustDto,
+      req.user,
+      MovementType.INBOUND,
+    );
   }
 
   @Post('branch/:branchId/sale')
@@ -43,15 +51,40 @@ export class InventoryController {
     @Body() adjustDto: AdjustInventoryDto,
     @Request() req,
   ) {
-    return this.inventoryService.adjustInventory(branchId, adjustDto, req.user, MovementType.SALE);
+    return this.inventoryService.adjustInventory(
+      branchId,
+      adjustDto,
+      req.user,
+      MovementType.SALE,
+    );
   }
-  
+
   @Post('branch/:branchId/adjustment')
   adjustment(
     @Param('branchId', ParseIntPipe) branchId: number,
     @Body() adjustDto: AdjustInventoryDto,
     @Request() req,
   ) {
-    return this.inventoryService.adjustInventory(branchId, adjustDto, req.user, MovementType.ADJUSTMENT);
+    return this.inventoryService.adjustInventory(
+      branchId,
+      adjustDto,
+      req.user,
+      MovementType.ADJUSTMENT,
+    );
+  }
+
+  @Get('movements/branch/:branchId/item/:itemId')
+  getItemMovements(
+    @Param('branchId', ParseIntPipe) branchId: number,
+    @Param('itemId', ParseIntPipe) itemId: number,
+    @Query() paginationQuery: PaginationQueryDto,
+    @Request() req,
+  ) {
+    return this.inventoryService.getMovementsForItemInBranch(
+      branchId,
+      itemId,
+      paginationQuery,
+      req.user,
+    );
   }
 }

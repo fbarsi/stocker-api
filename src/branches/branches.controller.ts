@@ -18,8 +18,8 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('branches')
-@UseGuards(JwtAuthGuard, RolesGuard) // 🛡️ Protege todas las rutas
-@SetMetadata('roles', ['Manager']) // 👑 Solo los Managers pueden acceder
+@UseGuards(JwtAuthGuard, RolesGuard)
+@SetMetadata('roles', ['Manager'])
 export class BranchesController {
   constructor(private readonly branchesService: BranchesService) {}
 

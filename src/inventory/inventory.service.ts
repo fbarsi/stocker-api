@@ -6,10 +6,14 @@ import {
 } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { Inventory } from './entities/inventory.entity';
-import { InventoryMovement, MovementType } from './entities/inventory_movement.entity';
+import {
+  InventoryMovement,
+  MovementType,
+} from './entities/inventory_movement.entity';
 import { AdjustInventoryDto } from './dto/adjust-inventory.dto';
 import { Branch } from '../branches/entities/branch.entity';
 import { Item } from '../items/entities/item.entity';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 
 @Injectable()
 export class InventoryService {
@@ -18,7 +22,6 @@ export class InventoryService {
   async getInventoryForBranch(branchId: number, user: any) {
     const userBranchId = user.role === 'Employee' ? user.branchId : null;
 
-    // Un empleado solo puede ver el inventario de su propia sucursal
     if (userBranchId && userBranchId !== branchId) {
       throw new ForbiddenException(
         'No tienes permiso para acceder a esta sucursal.',
@@ -48,8 +51,6 @@ export class InventoryService {
     const unitChange = dto.unitChange ?? 0;
 
     return this.dataSource.transaction(async (manager) => {
-      // 1. 🛡️ VERIFICACIÓN DE SEGURIDAD
-      // Asegurarse de que la sucursal y el artículo pertenezcan a la empresa del usuario.
       const branch = await manager.findOneBy(Branch, {
         branch_id: branchId,
         company: { company_id: user.companyId },
@@ -59,7 +60,6 @@ export class InventoryService {
           'Sucursal no encontrada o no pertenece a tu empresa.',
         );
 
-      // Un empleado solo puede modificar el stock de su propia sucursal
       if (user.role === 'Employee' && user.branchId !== branchId) {
         throw new ForbiddenException(
           'Solo puedes modificar el inventario de tu sucursal asignada.',
@@ -75,7 +75,6 @@ export class InventoryService {
           'Artículo no encontrado o no pertenece a tu empresa.',
         );
 
-      // 2. OBTENER O CREAR EL REGISTRO DE INVENTARIO
       let inventory = await manager.findOne(Inventory, {
         where: { item: { item_id: itemId }, branch: { branch_id: branchId } },
       });
@@ -93,12 +92,10 @@ export class InventoryService {
         });
       }
 
-      // 3. ⚖️ LÓGICA DE CÁLCULO DE STOCK (NORMALIZACIÓN)
       let totalUnits =
         inventory.bundle_quantity * item.units_per_bundle +
         inventory.unit_quantity;
 
-      // Para ventas, los cambios son negativos. Para ingresos, positivos.
       const sign = movementType === MovementType.SALE ? -1 : 1;
       const changeInUnits =
         (bundleChange * item.units_per_bundle + unitChange) * sign;
@@ -121,7 +118,6 @@ export class InventoryService {
 
       await manager.save(inventory);
 
-      // 4. ✍️ CREAR EL MOVIMIENTO EN EL HISTORIAL
       const movement = manager.create(InventoryMovement, {
         item,
         branch,
@@ -134,5 +130,66 @@ export class InventoryService {
 
       return inventory;
     });
+  }
+
+  async getMovementsForItemInBranch(
+    branchId: number,
+    itemId: number,
+    paginationQuery: PaginationQueryDto,
+    user: any,
+  ) {
+    const { page = 1, limit = 20 } = paginationQuery;
+
+    if (user.role === 'Employee' && user.branchId !== branchId) {
+      throw new ForbiddenException(
+        'No tienes permiso para ver los movimientos de esta sucursal.',
+      );
+    }
+
+    const branchExists = await this.dataSource.getRepository(Branch).findOneBy({
+      branch_id: branchId,
+      company: { company_id: user.companyId },
+    });
+    if (!branchExists) {
+      throw new NotFoundException(
+        'Sucursal no encontrada o no pertenece a tu empresa.',
+      );
+    }
+
+    const movementsRepository =
+      this.dataSource.getRepository(InventoryMovement);
+    const [movements, total] = await movementsRepository.findAndCount({
+      where: {
+        branch: { branch_id: branchId },
+        item: { item_id: itemId },
+      },
+      relations: {
+        user: true,
+      },
+      select: {
+        movement_id: true,
+        movement_type: true,
+        bundle_change: true,
+        unit_change: true,
+        timestamp: true,
+        user: {
+          user_id: true,
+          full_name: true,
+        },
+      },
+      order: {
+        timestamp: 'DESC',
+      },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+
+    return {
+      data: movements,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    };
   }
 }

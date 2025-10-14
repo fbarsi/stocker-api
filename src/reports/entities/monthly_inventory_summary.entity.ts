@@ -3,7 +3,7 @@ import { Item } from '../../items/entities/item.entity';
 import { Branch } from '../../branches/entities/branch.entity';
 
 @Entity('monthly_inventory_summary')
-@Unique(['item', 'branch', 'summary_year', 'summary_month']) // The unique constraint
+@Unique(['item', 'branch', 'summary_year', 'summary_month'])
 export class MonthlyInventorySummary {
   @PrimaryGeneratedColumn()
   summary_id: number;

@@ -55,8 +55,33 @@ export class InvitationsService {
   // Lógica para que un usuario vea sus invitaciones
   async findForUser(email: string) {
     return this.invitationsRepository.find({
-      where: { employee_email: email, status: InvitationStatus.PENDING },
-      relations: ['company', 'branch', 'manager'],
+      where: { 
+        employee_email: email, 
+        status: InvitationStatus.PENDING 
+      },
+      relations: {
+        company: true,
+        branch: true,
+        manager: true,
+      },
+      select: {
+        invitation_id: true,
+        status: true,
+        created_at: true,
+        updated_at: true,
+        company: {
+          company_name: true,
+        },
+        branch: {
+          branch_name: true,
+        },
+        manager: {
+          full_name: true,
+        },
+      },
+      order: {
+        created_at: 'DESC',
+      }
     });
   }
 
