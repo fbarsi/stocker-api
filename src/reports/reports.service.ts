@@ -2,8 +2,8 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, MoreThan, LessThan, DataSource } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { InventoryMovement, MovementType } from '../inventory/inventory_movement.entity';
-import { MonthlyInventorySummary } from './monthly_inventory_summary.entity';
+import { InventoryMovement, MovementType } from '../inventory/entities/inventory_movement.entity';
+import { MonthlyInventorySummary } from './entities/monthly_inventory_summary.entity';
 
 @Injectable()
 export class ReportsService {

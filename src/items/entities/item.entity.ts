@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { Company } from '../companies/company.entity';
-import { Inventory } from '../inventory/inventory.entity';
-import { InventoryMovement } from '../inventory/inventory_movement.entity';
+import { Company } from '../../companies/entities/company.entity';
+import { Inventory } from '../../inventory/entities/inventory.entity';
+import { InventoryMovement } from '../../inventory/entities/inventory_movement.entity';
 
 @Entity('items')
 export class Item {

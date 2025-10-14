@@ -5,11 +5,11 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { Inventory } from './inventory.entity';
-import { InventoryMovement, MovementType } from './inventory_movement.entity';
+import { Inventory } from './entities/inventory.entity';
+import { InventoryMovement, MovementType } from './entities/inventory_movement.entity';
 import { AdjustInventoryDto } from './dto/adjust-inventory.dto';
-import { Branch } from '../branches/branch.entity';
-import { Item } from '../items/item.entity';
+import { Branch } from '../branches/entities/branch.entity';
+import { Item } from '../items/entities/item.entity';
 
 @Injectable()
 export class InventoryService {

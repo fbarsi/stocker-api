@@ -1,9 +1,9 @@
 // src/companies/companies.service.ts
 import { Injectable, BadRequestException, ConflictException, NotFoundException } from '@nestjs/common';
 import { DataSource } from 'typeorm';
-import { Company } from './company.entity';
-import { User } from '../users/user.entity';
-import { Role } from '../roles/role.entity';
+import { Company } from './entities/company.entity';
+import { User } from '../users/entities/user.entity';
+import { Role } from '../roles/entities/role.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { JwtService } from '@nestjs/jwt';
 

@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Unique, UpdateDateColumn } from 'typeorm';
-import { Item } from '../items/item.entity';
-import { Branch } from '../branches/branch.entity';
+import { Item } from '../../items/entities/item.entity';
+import { Branch } from '../../branches/entities/branch.entity';
 
 @Entity('inventory')
 @Unique(['item', 'branch']) // Ensures an item appears only once per branch

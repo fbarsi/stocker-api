@@ -1,8 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from 'typeorm';
-import { Company } from '../companies/company.entity';
-import { Branch } from '../branches/branch.entity';
-import { Role } from '../roles/role.entity';
-import { InventoryMovement } from '../inventory/inventory_movement.entity';
+import { Company } from '../../companies/entities/company.entity';
+import { Branch } from '../../branches/entities/branch.entity';
+import { Role } from '../../roles/entities/role.entity';
+import { InventoryMovement } from '../../inventory/entities/inventory_movement.entity';
 
 @Entity('users')
 export class User {

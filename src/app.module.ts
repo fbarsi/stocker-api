@@ -10,6 +10,7 @@ import { ScheduleModule } from '@nestjs/schedule';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { InvitationsModule } from './invitations/invitations.module';
 import configuration from './config/configuration';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import configuration from './config/configuration';
     InventoryModule,
     ReportsModule,
     InvitationsModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

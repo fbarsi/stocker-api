@@ -9,9 +9,9 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
-import { User } from '../users/user.entity';
-import { Company } from '../companies/company.entity';
-import { Role } from '../roles/role.entity';
+import { User } from '../users/entities/user.entity';
+import { Company } from '../companies/entities/company.entity';
+import { Role } from '../roles/entities/role.entity';
 import { UsersService } from '../users/users.service';
 
 @Injectable()

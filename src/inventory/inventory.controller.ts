@@ -13,7 +13,7 @@ import { InventoryService } from './inventory.service';
 import { AdjustInventoryDto } from './dto/adjust-inventory.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
-import { MovementType } from './inventory_movement.entity';
+import { MovementType } from './entities/inventory_movement.entity';
 
 @Controller('inventory')
 @UseGuards(JwtAuthGuard, RolesGuard)

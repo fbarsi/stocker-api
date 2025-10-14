@@ -1,8 +1,8 @@
 // src/invitations/entities/invitation.entity.ts
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { Company } from '../companies/company.entity';
-import { Branch } from '../branches/branch.entity';
-import { User } from '../users/user.entity';
+import { Company } from '../../companies/entities/company.entity';
+import { Branch } from '../../branches/entities/branch.entity';
+import { User } from '../../users/entities/user.entity';
 
 export enum InvitationStatus {
   PENDING = 'PENDING',

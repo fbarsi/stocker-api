@@ -8,11 +8,11 @@ import {
 } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Invitation, InvitationStatus } from './invitation.entity';
+import { Invitation, InvitationStatus } from './entities/invitation.entity';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
-import { User } from '../users/user.entity';
-import { Branch } from '../branches/branch.entity';
-import { Role } from '../roles/role.entity';
+import { User } from '../users/entities/user.entity';
+import { Branch } from '../branches/entities/branch.entity';
+import { Role } from '../roles/entities/role.entity';
 
 @Injectable()
 export class InvitationsService {

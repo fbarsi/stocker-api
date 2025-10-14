@@ -8,10 +8,11 @@ import { LocalStrategy } from './strategies/local.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Company } from 'src/companies/company.entity';
-import { Role } from 'src/roles/role.entity';
-import { User } from 'src/users/user.entity';
+import { Company } from 'src/companies/entities/company.entity';
+import { Role } from 'src/roles/entities/role.entity';
+import { User } from 'src/users/entities/user.entity';
 import { RolesGuard } from './guards/roles.guard';
+import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { RolesGuard } from './guards/roles.guard';
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService, LocalStrategy, JwtStrategy, RolesGuard],
+  providers: [AuthService, LocalStrategy, JwtStrategy, RolesGuard, UsersService],
   exports: [AuthService, RolesGuard],
 })
 export class AuthModule {}
