@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CompaniesModule } from './companies/companies.module';
 import { BranchesModule } from './branches/branches.module';
-import { RolesModule } from './roles/roles.module';
 import { UsersModule } from './users/users.module';
 import { ItemsModule } from './items/items.module';
 import { InventoryModule } from './inventory/inventory.module';
@@ -36,7 +35,6 @@ import configuration from './config/configuration';
     }),
     CompaniesModule,
     BranchesModule,
-    RolesModule,
     UsersModule,
     ItemsModule,
     InventoryModule,

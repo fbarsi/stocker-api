@@ -40,7 +40,9 @@ export class AuthService {
     const payload = {
       email: user.email,
       sub: user.user_id,
-      role: user.role.role_name,
+      role: user.role?.role_name, // Usamos optional chaining por si el rol es nulo
+      companyId: user.company?.company_id, // Añadimos companyId
+      branchId: user.branch?.branch_id, // Añadimos branchId
     };
     return {
       access_token: this.jwtService.sign(payload),
@@ -66,7 +68,7 @@ export class AuthService {
       email,
       password_hash: hashedPassword,
     });
-    
+
     await this.dataSource.getRepository(User).save(newUser);
 
     const { password_hash, ...userWithoutPassword } = newUser;
