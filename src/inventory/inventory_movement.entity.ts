@@ -1,0 +1,47 @@
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Item } from '../items/item.entity';
+import { Branch } from '../branches/branch.entity';
+import { User } from '../users/user.entity';
+
+export enum MovementType {
+  INBOUND = 'INBOUND',
+  SALE = 'SALE',
+  ADJUSTMENT = 'ADJUSTMENT',
+  TRANSFER = 'TRANSFER',
+}
+
+@Entity('inventory_movements')
+export class InventoryMovement {
+  @PrimaryGeneratedColumn()
+  movement_id: number;
+  
+  @Column({
+    type: 'enum',
+    enum: MovementType,
+  })
+  movement_type: MovementType;
+
+  @Column({ type: 'int' })
+  bundle_change: number;
+
+  @Column({ type: 'int' })
+  unit_change: number;
+
+  @Column({ type: 'text', nullable: true })
+  notes: string;
+
+  @CreateDateColumn()
+  timestamp: Date;
+
+  @ManyToOne(() => Item, (item) => item.movements)
+  @JoinColumn({ name: 'item_id' })
+  item: Item;
+
+  @ManyToOne(() => Branch, (branch) => branch.movements)
+  @JoinColumn({ name: 'branch_id' })
+  branch: Branch;
+
+  @ManyToOne(() => User, (user) => user.movements)
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+}
