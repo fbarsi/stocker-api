@@ -1,4 +1,3 @@
-// src/invitations/invitations.service.ts
 import {
   Injectable,
   BadRequestException,
@@ -22,7 +21,6 @@ export class InvitationsService {
     private dataSource: DataSource,
   ) {}
 
-  // Lógica para que un manager envíe una invitación
   async create(dto: CreateInvitationDto, manager: any) {
     const userToInvite = await this.dataSource
       .getRepository(User)
@@ -76,7 +74,8 @@ export class InvitationsService {
           branch_name: true,
         },
         manager: {
-          full_name: true,
+          name: true,
+          lastname: true,
         },
       },
       order: {

@@ -27,7 +27,7 @@ export class UsersService {
   ): Promise<Omit<User, 'password_hash'>[]> {
     return this.usersRepository.find({
       where: { company: { company_id: companyId } },
-      select: ['user_id', 'full_name', 'email'],
+      select: ['user_id', 'name', 'lastname', 'email'],
       relations: ['role', 'branch'],
     });
   }
@@ -56,7 +56,12 @@ export class UsersService {
       throw new NotFoundException('Usuario no encontrado');
     }
 
-    user.full_name = dto.full_name;
+    if (dto.name) {
+      user.name = dto.name;
+    }
+    if (dto.lastname) {
+      user.lastname = dto.lastname;
+    }
     await this.usersRepository.save(user);
 
     const { password_hash, ...profile } = user;

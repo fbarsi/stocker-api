@@ -26,9 +26,9 @@ export class AuthService {
     private roleRepository: Repository<Role>,
   ) {}
 
-  async validateUser(email: string, pass: string): Promise<any> {
+  async validateUser(email: string, password: string): Promise<any> {
     const user = await this.usersService.findOneByEmail(email);
-    if (user && (await bcrypt.compare(pass, user.password_hash))) {
+    if (user && (await bcrypt.compare(password, user.password_hash))) {
       const { password_hash, ...result } = user;
       return result;
     }
@@ -44,12 +44,17 @@ export class AuthService {
       branchId: user.branch?.branch_id,
     };
     return {
-      access_token: this.jwtService.sign(payload),
+      user: {
+        name: user.name,
+        lastname: user.lastname,
+        email: user.email,
+      },
+      token: this.jwtService.sign(payload),
     };
   }
 
   async register(createUserDto: CreateUserDto) {
-    const { full_name, email, password } = createUserDto;
+    const { name, lastname, email, password } = createUserDto;
 
     const userExists = await this.usersService.findOneByEmail(email);
     if (userExists) {
@@ -60,7 +65,8 @@ export class AuthService {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = this.dataSource.getRepository(User).create({
-      full_name,
+      name,
+      lastname,
       email,
       password_hash: hashedPassword,
     });

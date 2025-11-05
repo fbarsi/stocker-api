@@ -174,7 +174,8 @@ export class InventoryService {
         timestamp: true,
         user: {
           user_id: true,
-          full_name: true,
+          name: true,
+          lastname: true,
         },
       },
       order: {

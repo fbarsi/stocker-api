@@ -15,8 +15,11 @@ export class User {
   @Column({ type: 'varchar', length: 255 })
   password_hash: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  full_name: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  name: string;
+
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  lastname: string;
 
   @ManyToOne(() => Company, (company) => company.users, { nullable: true })
   @JoinColumn({ name: 'company_id' })
