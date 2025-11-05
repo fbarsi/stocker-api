@@ -20,44 +20,19 @@ import { AuthModule } from './auth/auth.module';
       load: [configuration],
     }),
     ScheduleModule.forRoot(),
-    // src/app.module.ts (Modificado)
-    // ...
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        // 💡 Usa la variable de entorno DATABASE_URL directamente para la conexión de Render
-        const databaseUrl = process.env.DATABASE_URL;
-
-        // Si DATABASE_URL está definida, usa el formato de URI de conexión
-        if (databaseUrl) {
-          // Configuración recomendada para PostgreSQL en servicios cloud como Render
-          return {
-            type: 'postgres',
-            url: databaseUrl, // Usa la URL de conexión completa
-            synchronize: config.get('database.synchronize'),
-            entities: [__dirname + '/**/*.entity{.ts,.js}'],
-            ssl: {
-              // Necesario para conexiones SSL con bases de datos como Render
-              rejectUnauthorized: false,
-            },
-          };
-        } else {
-          // Esto mantiene tu configuración local por si vuelves a un .env
-          return {
-            type: 'postgres',
-            host: config.get('database.host'),
-            port: config.get('database.port'),
-            username: config.get('database.db_user'),
-            password: config.get('database.password'),
-            database: config.get('database.database'),
-            synchronize: config.get('database.synchronize'),
-            entities: [__dirname + '/**/*.entity{.ts,.js}'],
-          };
-        }
-      },
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        url: process.env.DATABASE_URL,
+        synchronize: config.get('database.synchronize'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        ssl: {
+          rejectUnauthorized: false,
+        },
+      }),
     }),
-    // ...
     CompaniesModule,
     BranchesModule,
     UsersModule,
