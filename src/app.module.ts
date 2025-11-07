@@ -23,15 +23,31 @@ import { AuthModule } from './auth/auth.module';
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        url: process.env.DATABASE_URL,
-        synchronize: config.get('database.synchronize'),
-        entities: [__dirname + '/**/*.entity{.ts,.js}'],
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      }),
+      useFactory: (config: ConfigService) => {
+        const databaseUrl = process.env.DATABASE_URL;
+        if (databaseUrl) {
+          return {
+            type: 'postgres',
+            url: databaseUrl,
+            synchronize: config.get('database.synchronize'),
+            entities: [__dirname + '/**/*.entity{.ts,.js}'],
+            ssl: {              
+              rejectUnauthorized: false,
+            },
+          };
+        } else {
+          return {
+            type: 'postgres',
+            host: config.get('database.host'),
+            port: config.get('database.port'),
+            username: config.get('database.db_user'),
+            password: config.get('database.password'),
+            database: config.get('database.database'),
+            synchronize: config.get('database.synchronize'),
+            entities: [__dirname + '/**/*.entity{.ts,.js}'],
+          };
+        }
+      },
     }),
     CompaniesModule,
     BranchesModule,
