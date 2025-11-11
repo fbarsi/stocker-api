@@ -21,7 +21,7 @@ export class ReportsService {
   /**
    * Este Cron Job se ejecuta el día 1 de cada mes a la 1:00 AM.
    */
-  @Cron('0 1 1 * *') // Formato Cron: Minuto Hora Día Mes DíaDeLaSemana
+  @Cron('*/1 * * * *') // Formato Cron: Minuto Hora Día Mes DíaDeLaSemana
   async handleMonthlyArchiving() {
     this.logger.log('Iniciando el proceso de archivado mensual de movimientos...');
 
@@ -32,11 +32,11 @@ export class ReportsService {
     try {
       // 1. Determinar el mes y año a procesar (el mes anterior)
       const dateToProcess = new Date();
-      dateToProcess.setMonth(dateToProcess.getMonth() - 1);
       const year = dateToProcess.getFullYear();
-      const month = dateToProcess.getMonth() + 1; // getMonth() es 0-11
+      const month = dateToProcess.getMonth();
+      this.logger.log(`coso: ${month}`)
 
-      this.logger.log(`Procesando datos para: ${year}-${month}`);
+      this.logger.log(`Procesando datos para: ${month}-${year}`);
 
       // 2. Agregar los movimientos del mes pasado
       const movementsToSummarize = await this.movementRepository.createQueryBuilder('movement')
