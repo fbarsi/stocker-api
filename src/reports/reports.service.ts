@@ -21,7 +21,7 @@ export class ReportsService {
   /**
    * Este Cron Job se ejecuta el día 1 de cada mes a la 1:00 AM.
    */
-  @Cron('*/1 * * * *') // Formato Cron: Minuto Hora Día Mes DíaDeLaSemana
+  @Cron('0 1 1 * *') // Formato Cron: Minuto Hora Día Mes DíaDeLaSemana
   async handleMonthlyArchiving() {
     this.logger.log('Iniciando el proceso de archivado mensual de movimientos...');
 
