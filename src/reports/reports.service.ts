@@ -34,7 +34,6 @@ export class ReportsService {
       const dateToProcess = new Date();
       const year = dateToProcess.getFullYear();
       const month = dateToProcess.getMonth();
-      this.logger.log(`coso: ${month}`)
 
       this.logger.log(`Procesando datos para: ${month}-${year}`);
 
