@@ -1,5 +1,14 @@
 // src/invitations/invitations.controller.ts
-import { Controller, Post, Body, UseGuards, Request, SetMetadata, Get, Param } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  UseGuards,
+  Request,
+  SetMetadata,
+  Get,
+  Param,
+} from '@nestjs/common';
 import { InvitationsService } from './invitations.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
@@ -13,7 +22,10 @@ export class InvitationsController {
   @Post()
   @UseGuards(RolesGuard)
   @SetMetadata('roles', ['Manager'])
-  sendInvitation(@Body() createInvitationDto: CreateInvitationDto, @Request() req) {
+  sendInvitation(
+    @Body() createInvitationDto: CreateInvitationDto,
+    @Request() req,
+  ) {
     return this.invitationsService.create(createInvitationDto, req.user);
   }
 

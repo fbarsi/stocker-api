@@ -7,5 +7,5 @@ export default () => ({
     database: process.env.DATABASE,
     synchronize: process.env.SYNCH === 'true',
     logging: false,
-  }
+  },
 });

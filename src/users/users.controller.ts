@@ -36,7 +36,10 @@ export class UsersController {
   @Post('me/change-password')
   @UseGuards(JwtAuthGuard)
   changePassword(@Request() req, @Body() changePasswordDto: ChangePasswordDto) {
-    return this.usersService.changePassword(req.user.user_id, changePasswordDto);
+    return this.usersService.changePassword(
+      req.user.user_id,
+      changePasswordDto,
+    );
   }
 
   // --- Endpoints de Administración (para Managers) ---

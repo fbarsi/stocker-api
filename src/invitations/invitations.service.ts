@@ -53,9 +53,9 @@ export class InvitationsService {
   // Lógica para que un usuario vea sus invitaciones
   async findForUser(email: string) {
     return this.invitationsRepository.find({
-      where: { 
-        employee_email: email, 
-        status: InvitationStatus.PENDING 
+      where: {
+        employee_email: email,
+        status: InvitationStatus.PENDING,
       },
       relations: {
         company: true,
@@ -80,7 +80,7 @@ export class InvitationsService {
       },
       order: {
         created_at: 'DESC',
-      }
+      },
     });
   }
 

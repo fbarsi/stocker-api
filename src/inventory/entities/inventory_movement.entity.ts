@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Item } from '../../items/entities/item.entity';
 import { Branch } from '../../branches/entities/branch.entity';
 import { User } from '../../users/entities/user.entity';
@@ -14,7 +21,7 @@ export enum MovementType {
 export class InventoryMovement {
   @PrimaryGeneratedColumn()
   movement_id: number;
-  
+
   @Column({
     type: 'enum',
     enum: MovementType,

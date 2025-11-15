@@ -9,7 +9,7 @@ import { Branch } from 'src/branches/entities/branch.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Inventory, InventoryMovement, Item, Branch]), 
+    TypeOrmModule.forFeature([Inventory, InventoryMovement, Item, Branch]),
   ],
   controllers: [InventoryController],
   providers: [InventoryService],

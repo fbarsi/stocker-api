@@ -1,4 +1,11 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Unique } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+} from 'typeorm';
 import { Item } from '../../items/entities/item.entity';
 import { Branch } from '../../branches/entities/branch.entity';
 
@@ -28,7 +35,7 @@ export class MonthlyInventorySummary {
 
   @Column({ type: 'int', default: 0 })
   total_adjustment_bundles: number;
-  
+
   @Column({ type: 'int', default: 0 })
   total_adjustment_units: number;
 

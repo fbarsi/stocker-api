@@ -33,12 +33,18 @@ export class ItemsService {
     });
 
     if (!item) {
-      throw new NotFoundException(`Artículo con ID ${id} no encontrado o no pertenece a tu empresa.`);
+      throw new NotFoundException(
+        `Artículo con ID ${id} no encontrado o no pertenece a tu empresa.`,
+      );
     }
     return item;
   }
 
-  async update(id: number, updateItemDto: UpdateItemDto, companyId: number): Promise<Item> {
+  async update(
+    id: number,
+    updateItemDto: UpdateItemDto,
+    companyId: number,
+  ): Promise<Item> {
     const item = await this.findOneForCompany(id, companyId);
     const updatedItem = this.itemsRepository.merge(item, updateItemDto);
     return this.itemsRepository.save(updatedItem);

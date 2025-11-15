@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Unique, UpdateDateColumn } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  Unique,
+  UpdateDateColumn,
+} from 'typeorm';
 import { Item } from '../../items/entities/item.entity';
 import { Branch } from '../../branches/entities/branch.entity';
 
@@ -13,7 +21,7 @@ export class Inventory {
 
   @Column({ type: 'int', default: 0 })
   unit_quantity: number;
-  
+
   @UpdateDateColumn()
   last_updated: Date;
 

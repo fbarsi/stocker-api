@@ -31,7 +31,7 @@ import { AuthModule } from './auth/auth.module';
             url: databaseUrl,
             synchronize: config.get('database.synchronize'),
             entities: [__dirname + '/**/*.entity{.ts,.js}'],
-            ssl: {              
+            ssl: {
               rejectUnauthorized: false,
             },
           };
