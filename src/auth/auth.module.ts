@@ -13,7 +13,8 @@ import { Role } from 'src/roles/entities/role.entity';
 import { User } from 'src/users/entities/user.entity';
 import { RolesGuard } from './guards/roles.guard';
 import { UsersService } from 'src/users/users.service';
-import ms from 'ms';
+import { JwtRefreshStrategy } from './strategies/jwt-refresh.strategy';
+import { StringValue } from 'ms';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import ms from 'ms';
       useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('jwt.secret'),
         signOptions: {
-          expiresIn: configService.get<ms.StringValue>('jwt.expiresIn'),
+          expiresIn: configService.get<StringValue>('jwt.expiresIn'),
         },
       }),
     }),
@@ -37,6 +38,7 @@ import ms from 'ms';
     AuthService,
     LocalStrategy,
     JwtStrategy,
+    JwtRefreshStrategy,
     RolesGuard,
     UsersService,
   ],

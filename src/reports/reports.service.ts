@@ -7,7 +7,6 @@ import { MonthlyInventorySummary } from './entities/monthly_inventory_summary.en
 
 @Injectable()
 export class ReportsService {
-  // Creamos un Logger para ver los mensajes del job en la consola
   private readonly logger = new Logger(ReportsService.name);
 
   constructor(
@@ -15,13 +14,10 @@ export class ReportsService {
     private readonly movementRepository: Repository<InventoryMovement>,
     @InjectRepository(MonthlyInventorySummary)
     private readonly summaryRepository: Repository<MonthlyInventorySummary>,
-    private readonly dataSource: DataSource, // DataSource para manejar transacciones
+    private readonly dataSource: DataSource,
   ) {}
 
-  /**
-   * Este Cron Job se ejecuta el día 1 de cada mes a la 1:00 AM.
-   */
-  @Cron('0 1 1 * *') // Formato Cron: Minuto Hora Día Mes DíaDeLaSemana
+  @Cron('0 1 1 * *')
   async handleMonthlyArchiving() {
     this.logger.log(
       'Iniciando el proceso de archivado mensual de movimientos...',
@@ -32,14 +28,12 @@ export class ReportsService {
     await queryRunner.startTransaction();
 
     try {
-      // 1. Determinar el mes y año a procesar (el mes anterior)
       const dateToProcess = new Date();
       const year = dateToProcess.getFullYear();
       const month = dateToProcess.getMonth();
 
       this.logger.log(`Procesando datos para: ${month}-${year}`);
 
-      // 2. Agregar los movimientos del mes pasado
       const movementsToSummarize = await this.movementRepository
         .createQueryBuilder('movement')
         .select('movement.item_id', 'item_id')
@@ -57,7 +51,7 @@ export class ReportsService {
         .addSelect(
           "SUM(CASE WHEN movement.movement_type = 'SALE' THEN movement.bundle_change ELSE 0 END) * -1",
           'total_sale_bundles',
-        ) // Invertimos el signo para que sea positivo
+        ) 
         .addSelect(
           "SUM(CASE WHEN movement.movement_type = 'SALE' THEN movement.unit_change ELSE 0 END) * -1",
           'total_sale_units',
@@ -76,7 +70,6 @@ export class ReportsService {
         .getRawMany();
 
       if (movementsToSummarize.length > 0) {
-        // Usamos el queryRunner para insertar el resumen dentro de la transacción
         await queryRunner.manager
           .getRepository(MonthlyInventorySummary)
           .save(movementsToSummarize);
@@ -87,7 +80,6 @@ export class ReportsService {
         this.logger.log('No hay movimientos para resumir este mes.');
       }
 
-      // 3. Borrar los movimientos antiguos (de hace más de un año)
       const oneYearAgo = new Date();
       oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
 
@@ -103,18 +95,15 @@ export class ReportsService {
         );
       }
 
-      // Si todo salió bien, confirmamos la transacción
       await queryRunner.commitTransaction();
       this.logger.log('Proceso de archivado mensual completado exitosamente.');
     } catch (error) {
-      // Si algo falla, revertimos todos los cambios
       await queryRunner.rollbackTransaction();
       this.logger.error(
         'Error durante el archivado mensual. La transacción fue revertida.',
         error instanceof Error ? error.stack : error,
       );
     } finally {
-      // Liberamos el queryRunner
       await queryRunner.release();
     }
   }

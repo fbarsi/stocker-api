@@ -1,9 +1,9 @@
 interface JwtPayload {
   sub: number;
   email: string;
-  role: string;
-  companyId: number;
-  branchId: number;
+  role?: string;
+  companyId?: number;
+  branchId?: number;
 }
 
 interface RequestWithUser {
@@ -14,8 +14,8 @@ interface AuthenticatedUser {
   user_id: number;
   email: string;
   role: string;
-  companyId: number;
-  branchId: number;
+  companyId?: number; 
+  branchId?: number; 
 }
 
 export type { JwtPayload, RequestWithUser, AuthenticatedUser };

@@ -35,13 +35,10 @@ export class UsersService {
     });
   }
 
-  /**
-   * Obtiene el perfil del usuario actual, excluyendo la contraseña.
-   */
   async getProfile(userId: number) {
     const user = await this.usersRepository.findOne({
       where: { user_id: userId },
-      relations: ['company', 'branch', 'role'], // Carga la información relacionada
+      relations: ['company', 'branch', 'role'],
     });
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
@@ -58,9 +55,6 @@ export class UsersService {
     };
   }
 
-  /**
-   * Actualiza el perfil del usuario actual.
-   */
   async updateProfile(userId: number, dto: UpdateProfileDto) {
     const user = await this.usersRepository.findOneBy({ user_id: userId });
     if (!user) {
@@ -87,16 +81,12 @@ export class UsersService {
     };
   }
 
-  /**
-   * Cambia la contraseña del usuario actual.
-   */
   async changePassword(userId: number, dto: ChangePasswordDto) {
     const user = await this.usersRepository.findOneBy({ user_id: userId });
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
-    // 1. Verificar que la contraseña actual sea correcta
     const isPasswordMatching = await bcrypt.compare(
       dto.currentPassword,
       user.password_hash,
@@ -106,7 +96,6 @@ export class UsersService {
       throw new UnauthorizedException('La contraseña actual es incorrecta');
     }
 
-    // 2. Hashear y guardar la nueva contraseña
     const salt = await bcrypt.genSalt();
     user.password_hash = await bcrypt.hash(dto.newPassword, salt);
     await this.usersRepository.save(user);

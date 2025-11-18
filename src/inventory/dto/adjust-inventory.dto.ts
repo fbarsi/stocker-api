@@ -7,9 +7,9 @@ export class AdjustInventoryDto {
 
   @IsNumber()
   @IsOptional()
-  bundleChange?: number = 0; // Cambio en bultos (positivo o negativo)
+  bundleChange?: number = 0;
 
   @IsNumber()
   @IsOptional()
-  unitChange?: number = 0; // Cambio en unidades (positivo o negativo)
+  unitChange?: number = 0;
 }

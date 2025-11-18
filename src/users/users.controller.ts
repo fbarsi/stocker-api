@@ -50,6 +50,6 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @SetMetadata('roles', ['Manager'])
   findAll(@Request() req: RequestWithUser) {
-    return this.usersService.findAllInCompany(req.user.companyId);
+    return this.usersService.findAllInCompany(req.user.companyId!);
   }
 }

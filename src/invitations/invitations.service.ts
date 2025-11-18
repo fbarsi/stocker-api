@@ -49,7 +49,6 @@ export class InvitationsService {
     return this.invitationsRepository.save(newInvitation);
   }
 
-  // Lógica para que un usuario vea sus invitaciones
   async findForUser(email: string) {
     return this.invitationsRepository.find({
       where: {
@@ -83,7 +82,6 @@ export class InvitationsService {
     });
   }
 
-  // Lógica para aceptar una invitación
   async accept(invitationId: number, employee: AuthenticatedUser) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -123,13 +121,11 @@ export class InvitationsService {
         await queryRunner.manager.save(employeeRole);
       }
 
-      // Asignar compañía, sucursal y rol al usuario
       user.company = invitation.company;
       user.branch = invitation.branch;
       user.role = employeeRole;
       await queryRunner.manager.save(user);
 
-      // Actualizar estado de la invitación
       invitation.status = InvitationStatus.ACCEPTED;
       await queryRunner.manager.save(invitation);
 
@@ -143,7 +139,6 @@ export class InvitationsService {
     }
   }
 
-  // Lógica para rechazar una invitación
   async decline(invitationId: number, employee: AuthenticatedUser) {
     const invitation = await this.invitationsRepository.findOneBy({
       invitation_id: invitationId,

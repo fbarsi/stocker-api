@@ -1,4 +1,3 @@
-// src/invitations/invitations.controller.ts
 import {
   Controller,
   Post,

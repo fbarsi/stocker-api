@@ -11,7 +11,7 @@ import { Item } from '../../items/entities/item.entity';
 import { Branch } from '../../branches/entities/branch.entity';
 
 @Entity('inventory')
-@Unique(['item', 'branch']) // Ensures an item appears only once per branch
+@Unique(['item', 'branch'])
 export class Inventory {
   @PrimaryGeneratedColumn()
   inventory_id: number;
