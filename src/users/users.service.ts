@@ -46,8 +46,16 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
-    const { password_hash, ...profile } = user;
-    return profile;
+    return {
+      user_id: user.user_id,
+      email: user.email,
+      name: user.name,
+      lastname: user.lastname,
+      company: user.company,
+      branch: user.branch,
+      role: user.role,
+      movements: user.movements,
+    };
   }
 
   /**
@@ -67,8 +75,16 @@ export class UsersService {
     }
     await this.usersRepository.save(user);
 
-    const { password_hash, ...profile } = user;
-    return profile;
+    return {
+      user_id: user.user_id,
+      email: user.email,
+      name: user.name,
+      lastname: user.lastname,
+      company: user.company,
+      branch: user.branch,
+      role: user.role,
+      movements: user.movements,
+    };
   }
 
   /**

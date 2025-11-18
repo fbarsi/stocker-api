@@ -24,17 +24,23 @@ export class BranchesController {
   constructor(private readonly branchesService: BranchesService) {}
 
   @Post()
-  create(@Body() createBranchDto: CreateBranchDto, @Request() req) {
+  create(
+    @Body() createBranchDto: CreateBranchDto,
+    @Request() req: { user: { companyId: number } },
+  ) {
     return this.branchesService.create(createBranchDto, req.user.companyId);
   }
 
   @Get()
-  findAll(@Request() req) {
+  findAll(@Request() req: { user: { companyId: number } }) {
     return this.branchesService.findAllForCompany(req.user.companyId);
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req: { user: { companyId: number } },
+  ) {
     return this.branchesService.findOneForCompany(id, req.user.companyId);
   }
 
@@ -42,13 +48,16 @@ export class BranchesController {
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateBranchDto: UpdateBranchDto,
-    @Request() req,
+    @Request() req: { user: { companyId: number } },
   ) {
     return this.branchesService.update(id, updateBranchDto, req.user.companyId);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number, @Request() req) {
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+    @Request() req: { user: { companyId: number } },
+  ) {
     return this.branchesService.remove(id, req.user.companyId);
   }
 }

@@ -16,6 +16,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { MovementType } from './entities/inventory_movement.entity';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import type { RequestWithUser } from 'src/interfaces';
 
 @Controller('inventory')
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -26,7 +27,7 @@ export class InventoryController {
   @Get('branch/:branchId')
   getBranchInventory(
     @Param('branchId', ParseIntPipe) branchId: number,
-    @Request() req,
+    @Request() req: RequestWithUser,
   ) {
     return this.inventoryService.getInventoryForBranch(branchId, req.user);
   }
@@ -35,7 +36,7 @@ export class InventoryController {
   inbound(
     @Param('branchId', ParseIntPipe) branchId: number,
     @Body() adjustDto: AdjustInventoryDto,
-    @Request() req,
+    @Request() req: RequestWithUser,
   ) {
     return this.inventoryService.adjustInventory(
       branchId,
@@ -49,7 +50,7 @@ export class InventoryController {
   sale(
     @Param('branchId', ParseIntPipe) branchId: number,
     @Body() adjustDto: AdjustInventoryDto,
-    @Request() req,
+    @Request() req: RequestWithUser,
   ) {
     return this.inventoryService.adjustInventory(
       branchId,
@@ -63,7 +64,7 @@ export class InventoryController {
   adjustment(
     @Param('branchId', ParseIntPipe) branchId: number,
     @Body() adjustDto: AdjustInventoryDto,
-    @Request() req,
+    @Request() req: RequestWithUser,
   ) {
     return this.inventoryService.adjustInventory(
       branchId,
@@ -78,7 +79,7 @@ export class InventoryController {
     @Param('branchId', ParseIntPipe) branchId: number,
     @Param('itemId', ParseIntPipe) itemId: number,
     @Query() paginationQuery: PaginationQueryDto,
-    @Request() req,
+    @Request() req: RequestWithUser,
   ) {
     return this.inventoryService.getMovementsForItemInBranch(
       branchId,

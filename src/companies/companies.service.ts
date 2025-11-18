@@ -10,6 +10,7 @@ import { User } from '../users/entities/user.entity';
 import { Role } from '../roles/entities/role.entity';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { JwtService } from '@nestjs/jwt';
+import type { AuthenticatedUser } from 'src/interfaces';
 
 @Injectable()
 export class CompaniesService {
@@ -20,7 +21,7 @@ export class CompaniesService {
 
   async createAndAssignManager(
     createCompanyDto: CreateCompanyDto,
-    tokenUser: any,
+    tokenUser: AuthenticatedUser,
   ) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();

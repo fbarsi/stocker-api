@@ -13,6 +13,7 @@ import { Role } from 'src/roles/entities/role.entity';
 import { User } from 'src/users/entities/user.entity';
 import { RolesGuard } from './guards/roles.guard';
 import { UsersService } from 'src/users/users.service';
+import ms from 'ms';
 
 @Module({
   imports: [
@@ -23,9 +24,11 @@ import { UsersService } from 'src/users/users.service';
       imports: [ConfigModule],
       inject: [ConfigService],
       global: true,
-      useFactory: async (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_SECRET'),
-        signOptions: { expiresIn: '1d' },
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('jwt.secret'),
+        signOptions: {
+          expiresIn: configService.get<ms.StringValue>('jwt.expiresIn'),
+        },
       }),
     }),
   ],

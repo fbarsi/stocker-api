@@ -14,12 +14,16 @@ import { AdjustInventoryDto } from './dto/adjust-inventory.dto';
 import { Branch } from '../branches/entities/branch.entity';
 import { Item } from '../items/entities/item.entity';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import type { AuthenticatedUser } from 'src/interfaces';
 
 @Injectable()
 export class InventoryService {
   constructor(private dataSource: DataSource) {}
 
-  async getInventoryForBranch(branchId: number, user: any) {
+  async getInventoryForBranch(
+    branchId: number,
+    user: AuthenticatedUser,
+  ): Promise<Inventory[]> {
     const userBranchId = user.role === 'Employee' ? user.branchId : null;
 
     if (userBranchId && userBranchId !== branchId) {
@@ -43,7 +47,7 @@ export class InventoryService {
   async adjustInventory(
     branchId: number,
     dto: AdjustInventoryDto,
-    user: any,
+    user: AuthenticatedUser,
     movementType: MovementType,
   ) {
     const { itemId } = dto;
@@ -136,7 +140,7 @@ export class InventoryService {
     branchId: number,
     itemId: number,
     paginationQuery: PaginationQueryDto,
-    user: any,
+    user: AuthenticatedUser,
   ) {
     const { page = 1, limit = 20 } = paginationQuery;
 

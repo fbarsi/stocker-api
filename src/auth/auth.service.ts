@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  ConflictException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -26,16 +22,27 @@ export class AuthService {
     private roleRepository: Repository<Role>,
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async validateUser(
+    email: string,
+    password: string,
+  ): Promise<Partial<User> | null> {
     const user = await this.usersService.findOneByEmail(email);
     if (user && (await bcrypt.compare(password, user.password_hash))) {
-      const { password_hash, ...result } = user;
-      return result;
+      return {
+        user_id: user.user_id,
+        email: user.email,
+        name: user.name,
+        lastname: user.lastname,
+        company: user.company,
+        branch: user.branch,
+        role: user.role,
+        movements: user.movements,
+      };
     }
     return null;
   }
 
-  async login(user: any) {
+  login(user: Partial<User>) {
     const payload = {
       email: user.email,
       sub: user.user_id,
@@ -73,7 +80,15 @@ export class AuthService {
 
     await this.dataSource.getRepository(User).save(newUser);
 
-    const { password_hash, ...userWithoutPassword } = newUser;
-    return userWithoutPassword;
+    return {
+      user_id: newUser.user_id,
+      email: newUser.email,
+      name: newUser.name,
+      lastname: newUser.lastname,
+      company: newUser.company,
+      branch: newUser.branch,
+      role: newUser.role,
+      movements: newUser.movements,
+    };
   }
 }

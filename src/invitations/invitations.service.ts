@@ -2,7 +2,6 @@ import {
   Injectable,
   BadRequestException,
   ConflictException,
-  ForbiddenException,
   NotFoundException,
 } from '@nestjs/common';
 import { DataSource, Repository } from 'typeorm';
@@ -10,8 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Invitation, InvitationStatus } from './entities/invitation.entity';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
 import { User } from '../users/entities/user.entity';
-import { Branch } from '../branches/entities/branch.entity';
 import { Role } from '../roles/entities/role.entity';
+import type { AuthenticatedUser } from 'src/interfaces';
 
 @Injectable()
 export class InvitationsService {
@@ -21,7 +20,7 @@ export class InvitationsService {
     private dataSource: DataSource,
   ) {}
 
-  async create(dto: CreateInvitationDto, manager: any) {
+  async create(dto: CreateInvitationDto, manager: AuthenticatedUser) {
     const userToInvite = await this.dataSource
       .getRepository(User)
       .findOneBy({ email: dto.employee_email });
@@ -85,7 +84,7 @@ export class InvitationsService {
   }
 
   // Lógica para aceptar una invitación
-  async accept(invitationId: number, employee: any) {
+  async accept(invitationId: number, employee: AuthenticatedUser) {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
@@ -145,7 +144,7 @@ export class InvitationsService {
   }
 
   // Lógica para rechazar una invitación
-  async decline(invitationId: number, employee: any) {
+  async decline(invitationId: number, employee: AuthenticatedUser) {
     const invitation = await this.invitationsRepository.findOneBy({
       invitation_id: invitationId,
       employee_email: employee.email,

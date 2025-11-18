@@ -1,11 +1,8 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, MoreThan, LessThan, DataSource } from 'typeorm';
-import { Cron, CronExpression } from '@nestjs/schedule';
-import {
-  InventoryMovement,
-  MovementType,
-} from '../inventory/entities/inventory_movement.entity';
+import { Repository, LessThan, DataSource } from 'typeorm';
+import { Cron } from '@nestjs/schedule';
+import { InventoryMovement } from '../inventory/entities/inventory_movement.entity';
 import { MonthlyInventorySummary } from './entities/monthly_inventory_summary.entity';
 
 @Injectable()
@@ -114,7 +111,7 @@ export class ReportsService {
       await queryRunner.rollbackTransaction();
       this.logger.error(
         'Error durante el archivado mensual. La transacción fue revertida.',
-        error.stack,
+        error instanceof Error ? error.stack : error,
       );
     } finally {
       // Liberamos el queryRunner

@@ -13,6 +13,7 @@ import { InvitationsService } from './invitations.service';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { CreateInvitationDto } from './dto/create-invitation.dto';
+import type { RequestWithUser } from 'src/interfaces';
 
 @Controller('invitations')
 @UseGuards(JwtAuthGuard)
@@ -24,23 +25,23 @@ export class InvitationsController {
   @SetMetadata('roles', ['Manager'])
   sendInvitation(
     @Body() createInvitationDto: CreateInvitationDto,
-    @Request() req,
+    @Request() req: RequestWithUser,
   ) {
     return this.invitationsService.create(createInvitationDto, req.user);
   }
 
   @Get('/me')
-  getMyInvitations(@Request() req) {
+  getMyInvitations(@Request() req: RequestWithUser) {
     return this.invitationsService.findForUser(req.user.email);
   }
 
   @Post('/:id/accept')
-  acceptInvitation(@Param('id') id: string, @Request() req) {
+  acceptInvitation(@Param('id') id: string, @Request() req: RequestWithUser) {
     return this.invitationsService.accept(+id, req.user);
   }
 
   @Post('/:id/decline')
-  declineInvitation(@Param('id') id: string, @Request() req) {
+  declineInvitation(@Param('id') id: string, @Request() req: RequestWithUser) {
     return this.invitationsService.decline(+id, req.user);
   }
 }
