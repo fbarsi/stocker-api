@@ -35,12 +35,12 @@ export class InventoryService {
     return this.dataSource.getRepository(Inventory).find({
       where: {
         branch: {
-          branch_id: branchId,
-          company: { company_id: user.companyId },
+          branchId: branchId,
+          company: { companyId: user.companyId },
         },
       },
       relations: ['item'],
-      order: { item: { item_name: 'ASC' } },
+      order: { item: { itemName: 'ASC' } },
     });
   }
 
@@ -56,8 +56,8 @@ export class InventoryService {
 
     return this.dataSource.transaction(async (manager) => {
       const branch = await manager.findOneBy(Branch, {
-        branch_id: branchId,
-        company: { company_id: user.companyId },
+        branchId: branchId,
+        company: { companyId: user.companyId },
       });
       if (!branch)
         throw new NotFoundException(
@@ -71,8 +71,8 @@ export class InventoryService {
       }
 
       const item = await manager.findOneBy(Item, {
-        item_id: itemId,
-        company: { company_id: user.companyId },
+        itemId: itemId,
+        company: { companyId: user.companyId },
       });
       if (!item)
         throw new NotFoundException(
@@ -80,7 +80,7 @@ export class InventoryService {
         );
 
       let inventory = await manager.findOne(Inventory, {
-        where: { item: { item_id: itemId }, branch: { branch_id: branchId } },
+        where: { item: { itemId: itemId }, branch: { branchId: branchId } },
       });
 
       if (!inventory) {
@@ -91,18 +91,18 @@ export class InventoryService {
         inventory = manager.create(Inventory, {
           item,
           branch,
-          bundle_quantity: 0,
-          unit_quantity: 0,
+          bundleQuantity: 0,
+          unitQuantity: 0,
         });
       }
 
       let totalUnits =
-        inventory.bundle_quantity * item.units_per_bundle +
-        inventory.unit_quantity;
+        inventory.bundleQuantity * item.unitsPerBundle +
+        inventory.unitQuantity;
 
       const sign = movementType === MovementType.SALE ? -1 : 1;
       const changeInUnits =
-        (bundleChange * item.units_per_bundle + unitChange) * sign;
+        (bundleChange * item.unitsPerBundle + unitChange) * sign;
 
       if (
         movementType !== MovementType.INBOUND &&
@@ -115,20 +115,20 @@ export class InventoryService {
 
       totalUnits += changeInUnits;
 
-      inventory.bundle_quantity = Math.floor(
-        totalUnits / item.units_per_bundle,
+      inventory.bundleQuantity = Math.floor(
+        totalUnits / item.unitsPerBundle,
       );
-      inventory.unit_quantity = totalUnits % item.units_per_bundle;
+      inventory.unitQuantity = totalUnits % item.unitsPerBundle;
 
       await manager.save(inventory);
 
       const movement = manager.create(InventoryMovement, {
         item,
         branch,
-        user: { user_id: user.user_id },
-        movement_type: movementType,
-        bundle_change: bundleChange * sign,
-        unit_change: unitChange * sign,
+        user: { userId: user.userId },
+        movementType: movementType,
+        bundleChange: bundleChange * sign,
+        unitChange: unitChange * sign,
       });
       await manager.save(movement);
 
@@ -151,8 +151,8 @@ export class InventoryService {
     }
 
     const branchExists = await this.dataSource.getRepository(Branch).findOneBy({
-      branch_id: branchId,
-      company: { company_id: user.companyId },
+      branchId: branchId,
+      company: { companyId: user.companyId },
     });
     if (!branchExists) {
       throw new NotFoundException(
@@ -164,20 +164,20 @@ export class InventoryService {
       this.dataSource.getRepository(InventoryMovement);
     const [movements, total] = await movementsRepository.findAndCount({
       where: {
-        branch: { branch_id: branchId },
-        item: { item_id: itemId },
+        branch: { branchId: branchId },
+        item: { itemId: itemId },
       },
       relations: {
         user: true,
       },
       select: {
-        movement_id: true,
-        movement_type: true,
-        bundle_change: true,
-        unit_change: true,
+        movementId: true,
+        movementType: true,
+        bundleChange: true,
+        unitChange: true,
         timestamp: true,
         user: {
-          user_id: true,
+          userId: true,
           name: true,
           lastname: true,
         },

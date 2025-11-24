@@ -22,7 +22,7 @@ export class UsersController {
   @Get('me')
   @UseGuards(JwtAuthGuard)
   getProfile(@Request() req: RequestWithUser) {
-    return this.usersService.getProfile(req.user.user_id);
+    return this.usersService.getProfile(req.user.userId);
   }
 
   @Patch('me')
@@ -31,7 +31,7 @@ export class UsersController {
     @Request() req: RequestWithUser,
     @Body() updateProfileDto: UpdateProfileDto,
   ) {
-    return this.usersService.updateProfile(req.user.user_id, updateProfileDto);
+    return this.usersService.updateProfile(req.user.userId, updateProfileDto);
   }
 
   @Post('me/change-password')
@@ -41,7 +41,7 @@ export class UsersController {
     @Body() changePasswordDto: ChangePasswordDto,
   ) {
     return this.usersService.changePassword(
-      req.user.user_id,
+      req.user.userId,
       changePasswordDto,
     );
   }

@@ -27,24 +27,24 @@ export class UsersService {
 
   async findAllInCompany(
     companyId: number,
-  ): Promise<Omit<User, 'password_hash'>[]> {
+  ): Promise<Omit<User, 'passwordHash'>[]> {
     return this.usersRepository.find({
-      where: { company: { company_id: companyId } },
-      select: ['user_id', 'name', 'lastname', 'email'],
+      where: { company: { companyId: companyId } },
+      select: ['userId', 'name', 'lastname', 'email'],
       relations: ['role', 'branch'],
     });
   }
 
   async getProfile(userId: number) {
     const user = await this.usersRepository.findOne({
-      where: { user_id: userId },
+      where: { userId: userId },
       relations: ['company', 'branch', 'role'],
     });
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
     return {
-      user_id: user.user_id,
+      userId: user.userId,
       email: user.email,
       name: user.name,
       lastname: user.lastname,
@@ -56,7 +56,7 @@ export class UsersService {
   }
 
   async updateProfile(userId: number, dto: UpdateProfileDto) {
-    const user = await this.usersRepository.findOneBy({ user_id: userId });
+    const user = await this.usersRepository.findOneBy({ userId: userId });
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
@@ -70,7 +70,7 @@ export class UsersService {
     await this.usersRepository.save(user);
 
     return {
-      user_id: user.user_id,
+      userId: user.userId,
       email: user.email,
       name: user.name,
       lastname: user.lastname,
@@ -82,14 +82,14 @@ export class UsersService {
   }
 
   async changePassword(userId: number, dto: ChangePasswordDto) {
-    const user = await this.usersRepository.findOneBy({ user_id: userId });
+    const user = await this.usersRepository.findOneBy({ userId: userId });
     if (!user) {
       throw new NotFoundException('Usuario no encontrado');
     }
 
     const isPasswordMatching = await bcrypt.compare(
       dto.currentPassword,
-      user.password_hash,
+      user.passwordHash,
     );
 
     if (!isPasswordMatching) {
@@ -97,7 +97,7 @@ export class UsersService {
     }
 
     const salt = await bcrypt.genSalt();
-    user.password_hash = await bcrypt.hash(dto.newPassword, salt);
+    user.passwordHash = await bcrypt.hash(dto.newPassword, salt);
     await this.usersRepository.save(user);
 
     return { message: 'Contraseña actualizada exitosamente.' };

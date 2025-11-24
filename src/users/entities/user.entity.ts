@@ -14,13 +14,13 @@ import { InventoryMovement } from '../../inventory/entities/inventory_movement.e
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
-  user_id: number;
+  userId: number;
 
   @Column({ type: 'varchar', length: 255, unique: true })
   email: string;
 
-  @Column({ type: 'varchar', length: 255 })
-  password_hash: string;
+  @Column({ name: 'password_hash', type: 'varchar', length: 255 })
+  passwordHash: string;
 
   @Column({ type: 'varchar', length: 255, nullable: true })
   name: string;

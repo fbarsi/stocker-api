@@ -23,7 +23,7 @@ export class AuthController {
 
   @UseGuards(JwtRefreshGuard)
   @Post('refresh')
-  refresh(@Request() req: { user: AuthenticatedUser }) {
+  async refresh(@Request() req: { user: AuthenticatedUser }) {
     return this.authService.refreshToken(req.user);
   }
 }

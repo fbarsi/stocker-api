@@ -17,6 +17,7 @@ import { UpdateBranchDto } from './dto/update-branch.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 
+
 @Controller('branches')
 @UseGuards(JwtAuthGuard, RolesGuard)
 @SetMetadata('roles', ['Manager'])

@@ -11,7 +11,7 @@ interface RequestWithUser {
 }
 
 interface AuthenticatedUser {
-  user_id: number;
+  userId: number;
   email: string;
   role: string;
   companyId?: number; 

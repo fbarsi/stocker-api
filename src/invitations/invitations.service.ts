@@ -23,14 +23,14 @@ export class InvitationsService {
   async create(dto: CreateInvitationDto, manager: AuthenticatedUser) {
     const userToInvite = await this.dataSource
       .getRepository(User)
-      .findOneBy({ email: dto.employee_email });
+      .findOneBy({ email: dto.employeeEmail });
     if (userToInvite && userToInvite.company) {
       throw new ConflictException('Este usuario ya pertenece a una compañía.');
     }
 
     const invitationExists = await this.invitationsRepository.findOneBy({
-      employee_email: dto.employee_email,
-      company: { company_id: manager.companyId },
+      employeeEmail: dto.employeeEmail,
+      company: { companyId: manager.companyId },
       status: InvitationStatus.PENDING,
     });
     if (invitationExists) {
@@ -40,10 +40,10 @@ export class InvitationsService {
     }
 
     const newInvitation = this.invitationsRepository.create({
-      employee_email: dto.employee_email,
-      company: { company_id: manager.companyId },
-      branch: { branch_id: dto.branchId },
-      manager: { user_id: manager.user_id },
+      employeeEmail: dto.employeeEmail,
+      company: { companyId: manager.companyId },
+      branch: { branchId: dto.branchId },
+      manager: { userId: manager.userId },
     });
 
     return this.invitationsRepository.save(newInvitation);
@@ -52,7 +52,7 @@ export class InvitationsService {
   async findForUser(email: string) {
     return this.invitationsRepository.find({
       where: {
-        employee_email: email,
+        employeeEmail: email,
         status: InvitationStatus.PENDING,
       },
       relations: {
@@ -61,15 +61,15 @@ export class InvitationsService {
         manager: true,
       },
       select: {
-        invitation_id: true,
+        invitationId: true,
         status: true,
-        created_at: true,
-        updated_at: true,
+        createdAt: true,
+        updatedAt: true,
         company: {
-          company_name: true,
+          companyName: true,
         },
         branch: {
-          branch_name: true,
+          branchName: true,
         },
         manager: {
           name: true,
@@ -77,7 +77,7 @@ export class InvitationsService {
         },
       },
       order: {
-        created_at: 'DESC',
+        createdAt: 'DESC',
       },
     });
   }
@@ -90,8 +90,8 @@ export class InvitationsService {
     try {
       const invitation = await queryRunner.manager.findOne(Invitation, {
         where: {
-          invitation_id: invitationId,
-          employee_email: employee.email,
+          invitationId: invitationId,
+          employeeEmail: employee.email,
           status: InvitationStatus.PENDING,
         },
         relations: ['company', 'branch'],
@@ -100,7 +100,7 @@ export class InvitationsService {
         throw new NotFoundException('Invitación no encontrada o no válida.');
 
       const user = await queryRunner.manager.findOneBy(User, {
-        user_id: employee.user_id,
+        userId: employee.userId,
       });
       if (!user) {
         throw new NotFoundException(
@@ -141,8 +141,8 @@ export class InvitationsService {
 
   async decline(invitationId: number, employee: AuthenticatedUser) {
     const invitation = await this.invitationsRepository.findOneBy({
-      invitation_id: invitationId,
-      employee_email: employee.email,
+      invitationId: invitationId,
+      employeeEmail: employee.email,
     });
     if (!invitation) throw new NotFoundException('Invitación no encontrada.');
 

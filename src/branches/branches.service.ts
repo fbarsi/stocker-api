@@ -15,21 +15,21 @@ export class BranchesService {
   create(createBranchDto: CreateBranchDto, companyId: number): Promise<Branch> {
     const newBranch = this.branchesRepository.create({
       ...createBranchDto,
-      company: { company_id: companyId },
+      company: { companyId: companyId },
     });
     return this.branchesRepository.save(newBranch);
   }
 
   findAllForCompany(companyId: number): Promise<Branch[]> {
     return this.branchesRepository.find({
-      where: { company: { company_id: companyId } },
-      order: { branch_name: 'ASC' },
+      where: { company: { companyId: companyId } },
+      order: { branchName: 'ASC' },
     });
   }
 
   async findOneForCompany(id: number, companyId: number): Promise<Branch> {
     const branch = await this.branchesRepository.findOne({
-      where: { branch_id: id, company: { company_id: companyId } },
+      where: { branchId: id, company: { companyId: companyId } },
     });
 
     if (!branch) {
@@ -58,7 +58,7 @@ export class BranchesService {
     const branch = await this.findOneForCompany(id, companyId);
     await this.branchesRepository.remove(branch);
     return {
-      message: `Sucursal "${branch.branch_name}" eliminada exitosamente.`,
+      message: `Sucursal "${branch.branchName}" eliminada exitosamente.`,
     };
   }
 }

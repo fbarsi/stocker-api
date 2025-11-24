@@ -20,19 +20,20 @@ export enum MovementType {
 @Entity('inventory_movements')
 export class InventoryMovement {
   @PrimaryGeneratedColumn()
-  movement_id: number;
+  movementId: number;
 
   @Column({
+    name: 'movement_type',
     type: 'enum',
     enum: MovementType,
   })
-  movement_type: MovementType;
+  movementType: MovementType;
 
-  @Column({ type: 'int' })
-  bundle_change: number;
+  @Column({ name: 'bundle_change', type: 'int' })
+  bundleChange: number;
 
-  @Column({ type: 'int' })
-  unit_change: number;
+  @Column({ name: 'unit_change', type: 'int' })
+  unitChange: number;
 
   @Column({ type: 'text', nullable: true })
   notes: string;

@@ -12,13 +12,13 @@ import { Item } from '../../items/entities/item.entity';
 @Entity('companies')
 export class Company {
   @PrimaryGeneratedColumn()
-  company_id: number;
+  companyId: number;
 
-  @Column({ type: 'varchar', length: 255, unique: true })
-  company_name: string;
+  @Column({ name: 'company_name', type: 'varchar', length: 255, unique: true })
+  companyName: string;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 
   @OneToMany(() => User, (user) => user.company)
   users: User[];

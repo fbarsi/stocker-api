@@ -20,10 +20,10 @@ export enum InvitationStatus {
 @Entity('invitations')
 export class Invitation {
   @PrimaryGeneratedColumn()
-  invitation_id: number;
+  invitationId: number;
 
-  @Column()
-  employee_email: string;
+  @Column({ name: 'employee_email' })
+  employeeEmail: string;
 
   @Column({
     type: 'enum',
@@ -44,9 +44,9 @@ export class Invitation {
   @JoinColumn({ name: 'manager_id' })
   manager: User;
 
-  @CreateDateColumn()
-  created_at: Date;
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
 
-  @UpdateDateColumn()
-  updated_at: Date;
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
 }

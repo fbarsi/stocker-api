@@ -29,7 +29,7 @@ export class CompaniesService {
 
     try {
       const user = await queryRunner.manager.findOneBy(User, {
-        user_id: tokenUser.user_id,
+        userId: tokenUser.userId,
       });
       if (!user) {
         throw new NotFoundException('Usuario no encontrado');
@@ -39,7 +39,7 @@ export class CompaniesService {
       }
 
       const companyExists = await queryRunner.manager.findOneBy(Company, {
-        company_name: createCompanyDto.company_name,
+        companyName: createCompanyDto.companyName,
       });
       if (companyExists) {
         throw new ConflictException('Ya existe una compañía con ese nombre.');
@@ -64,9 +64,9 @@ export class CompaniesService {
 
       const payload = {
         email: user.email,
-        sub: user.user_id,
+        sub: user.userId,
         role: managerRole.role_name,
-        companyId: newCompany.company_id,
+        companyId: newCompany.companyId,
       };
       const newAccessToken = this.jwtService.sign(payload);
 
@@ -74,7 +74,7 @@ export class CompaniesService {
 
       return {
         company: newCompany,
-        access_token: newAccessToken,
+        accessToken: newAccessToken,
       };
     } catch (error) {
       await queryRunner.rollbackTransaction();

@@ -1,4 +1,8 @@
-import { Injectable, ConflictException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { JwtService } from '@nestjs/jwt';
@@ -13,7 +17,7 @@ import { ConfigService } from '@nestjs/config';
 import type { JwtPayload, AuthenticatedUser } from 'src/interfaces';
 import { StringValue } from 'ms';
 
-type TokenUser = Partial<User> & { user_id: number; email: string };
+type TokenUser = Partial<User> & { userId: number; email: string };
 
 @Injectable()
 export class AuthService {
@@ -33,9 +37,9 @@ export class AuthService {
     password: string,
   ): Promise<Partial<User> | null> {
     const user = await this.usersService.findOneByEmail(email);
-    if (user && (await bcrypt.compare(password, user.password_hash))) {
+    if (user && (await bcrypt.compare(password, user.passwordHash))) {
       return {
-        user_id: user.user_id,
+        userId: user.userId,
         email: user.email,
         name: user.name,
         lastname: user.lastname,
@@ -54,16 +58,16 @@ export class AuthService {
       (user as AuthenticatedUser).role;
 
     const companyId =
-      (user as Partial<User>).company?.company_id ||
+      (user as Partial<User>).company?.companyId ||
       (user as AuthenticatedUser).companyId;
 
     const branchId =
-      (user as Partial<User>).branch?.branch_id ||
+      (user as Partial<User>).branch?.branchId ||
       (user as AuthenticatedUser).branchId;
 
     const payload: JwtPayload = {
       email: user.email,
-      sub: user.user_id,
+      sub: user.userId,
       role: roleName,
       companyId: companyId,
       branchId: branchId,
@@ -86,7 +90,7 @@ export class AuthService {
 
   login(user: Partial<User>) {
     const tokenUser: TokenUser = {
-      user_id: user.user_id!,
+      userId: user.userId!,
       email: user.email!,
       ...user,
     };
@@ -98,17 +102,31 @@ export class AuthService {
         lastname: user.lastname,
         email: user.email,
       },
-      access_token: tokens.accessToken,
-      refresh_token: tokens.refreshToken,
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
     };
   }
 
-  refreshToken(user: AuthenticatedUser) {
-    const newTokens = this.generateTokens(user);
+  async refreshToken(user: AuthenticatedUser) {
+    const userProfile = await this.usersService.getProfile(user.userId);
+
+    if (!userProfile) {
+      throw new UnauthorizedException('User not found during token refresh');
+    }
+
+    const updatedUser: AuthenticatedUser = {
+      userId: userProfile.userId,
+      email: userProfile.email,
+      role: userProfile.role?.role_name || user.role,
+      companyId: userProfile.company?.companyId,
+      branchId: userProfile.branch?.branchId,
+    };
+
+    const newTokens = this.generateTokens(updatedUser);
 
     return {
-      access_token: newTokens.accessToken,
-      refresh_token: newTokens.refreshToken,
+      accessToken: newTokens.accessToken,
+      refreshToken: newTokens.refreshToken,
     };
   }
 
@@ -127,13 +145,13 @@ export class AuthService {
       name,
       lastname,
       email,
-      password_hash: hashedPassword,
+      passwordHash: hashedPassword,
     });
 
     await this.dataSource.getRepository(User).save(newUser);
 
     return {
-      user_id: newUser.user_id,
+      userId: newUser.userId,
       email: newUser.email,
       name: newUser.name,
       lastname: newUser.lastname,

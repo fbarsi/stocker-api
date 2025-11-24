@@ -15,21 +15,21 @@ export class ItemsService {
   create(createItemDto: CreateItemDto, companyId: number): Promise<Item> {
     const newItem = this.itemsRepository.create({
       ...createItemDto,
-      company: { company_id: companyId },
+      company: { companyId: companyId },
     });
     return this.itemsRepository.save(newItem);
   }
 
   findAllForCompany(companyId: number): Promise<Item[]> {
     return this.itemsRepository.find({
-      where: { company: { company_id: companyId } },
-      order: { item_name: 'ASC' },
+      where: { company: { companyId: companyId } },
+      order: { itemName: 'ASC' },
     });
   }
 
   async findOneForCompany(id: number, companyId: number): Promise<Item> {
     const item = await this.itemsRepository.findOne({
-      where: { item_id: id, company: { company_id: companyId } },
+      where: { itemId: id, company: { companyId: companyId } },
     });
 
     if (!item) {
@@ -53,6 +53,6 @@ export class ItemsService {
   async remove(id: number, companyId: number): Promise<{ message: string }> {
     const item = await this.findOneForCompany(id, companyId);
     await this.itemsRepository.remove(item);
-    return { message: `Artículo "${item.item_name}" eliminado exitosamente.` };
+    return { message: `Artículo "${item.itemName}" eliminado exitosamente.` };
   }
 }

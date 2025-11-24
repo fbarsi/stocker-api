@@ -14,16 +14,16 @@ import { Branch } from '../../branches/entities/branch.entity';
 @Unique(['item', 'branch'])
 export class Inventory {
   @PrimaryGeneratedColumn()
-  inventory_id: number;
+  inventoryId: number;
 
-  @Column({ type: 'int', default: 0 })
-  bundle_quantity: number;
+  @Column({ name: 'bundle_quantity', type: 'int', default: 0 })
+  bundleQuantity: number;
 
-  @Column({ type: 'int', default: 0 })
-  unit_quantity: number;
+  @Column({ name: 'unit_quantity', type: 'int', default: 0 })
+  unitQuantity: number;
 
-  @UpdateDateColumn()
-  last_updated: Date;
+  @UpdateDateColumn({ name: 'last_updated' })
+  lastUpdated: Date;
 
   @ManyToOne(() => Item, (item) => item.inventory)
   @JoinColumn({ name: 'item_id' })

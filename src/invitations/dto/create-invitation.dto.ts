@@ -3,7 +3,7 @@ import { IsEmail, IsNotEmpty, IsNumber } from 'class-validator';
 export class CreateInvitationDto {
   @IsEmail()
   @IsNotEmpty()
-  employee_email: string;
+  employeeEmail: string;
 
   @IsNumber()
   @IsNotEmpty()

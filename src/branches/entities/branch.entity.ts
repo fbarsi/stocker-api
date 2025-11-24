@@ -14,10 +14,10 @@ import { InventoryMovement } from '../../inventory/entities/inventory_movement.e
 @Entity('branches')
 export class Branch {
   @PrimaryGeneratedColumn()
-  branch_id: number;
+  branchId: number;
 
-  @Column({ type: 'varchar', length: 255 })
-  branch_name: string;
+  @Column({ name: 'branch_name', type: 'varchar', length: 255 })
+  branchName: string;
 
   @Column({ type: 'varchar', length: 500, nullable: true })
   address: string;

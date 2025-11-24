@@ -13,10 +13,10 @@ import { InventoryMovement } from '../../inventory/entities/inventory_movement.e
 @Entity('items')
 export class Item {
   @PrimaryGeneratedColumn()
-  item_id: number;
+  itemId: number;
 
-  @Column({ type: 'varchar', length: 255 })
-  item_name: string;
+  @Column({ name: 'item_name', type: 'varchar', length: 255 })
+  itemName: string;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   sku: string;
@@ -24,8 +24,8 @@ export class Item {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'int', default: 1 })
-  units_per_bundle: number;
+  @Column({ name: 'units_per_bundle', type: 'int', default: 1 })
+  unitsPerBundle: number;
 
   @ManyToOne(() => Company, (company) => company.items)
   @JoinColumn({ name: 'company_id' })

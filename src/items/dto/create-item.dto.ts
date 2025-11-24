@@ -3,7 +3,7 @@ import { IsString, IsNotEmpty, IsOptional, IsInt, Min } from 'class-validator';
 export class CreateItemDto {
   @IsString()
   @IsNotEmpty()
-  item_name: string;
+  itemName: string;
 
   @IsString()
   @IsOptional()
@@ -16,5 +16,5 @@ export class CreateItemDto {
   @IsInt()
   @Min(1)
   @IsOptional()
-  units_per_bundle?: number = 1;
+  unitsPerBundle?: number = 1;
 }
