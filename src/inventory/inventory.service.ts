@@ -136,29 +136,57 @@ export class InventoryService {
       });
       await manager.save(movement);
 
+      console.log("--- 🕵️ INICIO DEBUG NOTIFICACIONES ---");
+      console.log("1. Tipo de movimiento:", movementType);
+      
+      // 1. Calcular stock
       const currentTotalUnits = inventory.bundleQuantity * item.unitsPerBundle + inventory.unitQuantity;
-      const UMBRAL = 10; 
+      const UMBRAL = 20; 
+      
+      console.log(`2. Stock Actual: ${currentTotalUnits} (Umbral: ${UMBRAL})`);
+      console.log(`3. ¿Condición Stock? ${currentTotalUnits <= UMBRAL}`);
+      console.log(`4. ¿Condición Tipo? ${(movementType === MovementType.SALE || movementType === MovementType.ADJUSTMENT)}`);
 
-      if ((movementType === MovementType.SALE || movementType === MovementType.ADJUSTMENT) && currentTotalUnits <= UMBRAL) {
+      // Condición IF original
+      if (
+        (movementType === MovementType.SALE || movementType === MovementType.ADJUSTMENT) &&
+        currentTotalUnits <= UMBRAL
+      ) {
+        console.log("✅ CONDICIÓN CUMPLIDA: Buscando managers...");
+
+        // 4. Buscar Managers
         const managers = await manager.find(User, {
             where: { 
                 company: { companyId: user.companyId },
                 role: { role_name: 'Manager' } 
             },
-            select: ['pushToken']
+            select: ['userId', 'email', 'pushToken'] // Traemos email para ver quién es
         });
         
-        const tokens = managers.map(u => u.pushToken).filter(t => t);
+        console.log(`5. Managers encontrados: ${managers.length}`);
+        managers.forEach(m => console.log(`   - Manager: ${m.email}, Token: ${m.pushToken ? 'SI' : 'NULL'}`));
+
+        const tokens = managers
+            .map(u => u.pushToken)
+            .filter(token => token && token.length > 0);
+
+        console.log(`6. Tokens válidos para enviar: ${tokens.length}`);
 
         if (tokens.length > 0) {
+             console.log("🚀 Llamando a NotificationsService...");
              this.notificationsService.sendPushNotification(
                 tokens,
-                "Stock Bajo",
-                `Quedan solo ${currentTotalUnits} unidades de "${item.itemName}" en "${branch.branchName}".`,
-                { itemId: item.itemId, branchId: branch.branchId }
+                "⚠️ Alerta de Stock Bajo",
+                `Quedan solo ${currentTotalUnits} unidades de "${item.itemName}".`,
+                { itemId: item.itemId }
              );
+        } else {
+             console.log("⚠️ ALERTA: No hay tokens a donde enviar.");
         }
+      } else {
+        console.log("❌ NO SE CUMPLE LA CONDICIÓN: No se envían notificaciones.");
       }
+      console.log("--- FIN DEBUG ---");
 
       return inventory;
     });
