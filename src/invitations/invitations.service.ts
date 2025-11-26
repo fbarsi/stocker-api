@@ -154,10 +154,10 @@ export class InvitationsService {
   async findSentByManager(managerId: number) {
     return this.invitationsRepository.find({
       where: {
-        manager: { userId: managerId }, // Filtramos por la relación con el Manager
+        manager: { userId: managerId },
       },
-      relations: ['branch', 'company'], // Cargamos datos útiles para mostrar en el front
-      order: { createdAt: 'DESC' }, // Las más recientes primero
+      relations: ['branch', 'company'],
+      order: { createdAt: 'DESC' }, 
     });
   }
 }

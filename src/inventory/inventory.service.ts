@@ -197,4 +197,24 @@ export class InventoryService {
       totalPages: Math.ceil(total / limit),
     };
   }
+
+  async getMovementsForBranch(
+    branchId: number,
+    paginationQuery: PaginationQueryDto,
+    user: AuthenticatedUser
+  ) {
+    const { page = 1, limit = 20 } = paginationQuery;
+
+    if (user.role === 'Employee' && user.branchId !== branchId) {
+      throw new ForbiddenException('No tienes permiso para ver esta sucursal.');
+    }
+
+    return this.dataSource.getRepository(InventoryMovement).find({
+      where: { branch: { branchId } },
+      relations: ['item', 'user'],
+      order: { timestamp: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    });
+  }
 }

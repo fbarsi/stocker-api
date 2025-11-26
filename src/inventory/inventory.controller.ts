@@ -88,4 +88,13 @@ export class InventoryController {
       req.user,
     );
   }
+
+  @Get('movements/branch/:branchId')
+  getAllBranchMovements(
+    @Param('branchId', ParseIntPipe) branchId: number,
+    @Query() paginationQuery: PaginationQueryDto,
+    @Request() req: RequestWithUser,
+  ) {
+    return this.inventoryService.getMovementsForBranch(branchId, paginationQuery, req.user);
+  }
 }
