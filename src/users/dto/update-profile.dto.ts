@@ -8,4 +8,8 @@ export class UpdateProfileDto {
   @IsString()
   @IsOptional()
   lastname: string;
+
+  @IsString()
+  @IsOptional()
+  pushToken?: string;
 }

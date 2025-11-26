@@ -11,6 +11,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { InvitationsModule } from './invitations/invitations.module';
 import configuration from './config/configuration';
 import { AuthModule } from './auth/auth.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ import { AuthModule } from './auth/auth.module';
     ReportsModule,
     InvitationsModule,
     AuthModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [],

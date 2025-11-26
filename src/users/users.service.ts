@@ -67,6 +67,8 @@ export class UsersService {
     if (dto.lastname) {
       user.lastname = dto.lastname;
     }
+    if (dto.pushToken) user.pushToken = dto.pushToken;
+    
     await this.usersRepository.save(user);
 
     return {

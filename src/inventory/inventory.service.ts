@@ -15,10 +15,14 @@ import { Branch } from '../branches/entities/branch.entity';
 import { Item } from '../items/entities/item.entity';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import type { AuthenticatedUser } from 'src/interfaces';
+import { NotificationsService } from '../notifications/notifications.service';
+import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class InventoryService {
-  constructor(private dataSource: DataSource) {}
+  constructor(private dataSource: DataSource,
+    private notificationsService: NotificationsService,
+  ) {}
 
   async getInventoryForBranch(
     branchId: number,
@@ -131,6 +135,30 @@ export class InventoryService {
         unitChange: unitChange * sign,
       });
       await manager.save(movement);
+
+      const currentTotalUnits = inventory.bundleQuantity * item.unitsPerBundle + inventory.unitQuantity;
+      const UMBRAL = 10; 
+
+      if ((movementType === MovementType.SALE || movementType === MovementType.ADJUSTMENT) && currentTotalUnits <= UMBRAL) {
+        const managers = await manager.find(User, {
+            where: { 
+                company: { companyId: user.companyId },
+                role: { role_name: 'Manager' } 
+            },
+            select: ['pushToken']
+        });
+        
+        const tokens = managers.map(u => u.pushToken).filter(t => t);
+
+        if (tokens.length > 0) {
+             this.notificationsService.sendPushNotification(
+                tokens,
+                "Stock Bajo",
+                `Quedan solo ${currentTotalUnits} unidades de "${item.itemName}" en "${branch.branchName}".`,
+                { itemId: item.itemId, branchId: branch.branchId }
+             );
+        }
+      }
 
       return inventory;
     });

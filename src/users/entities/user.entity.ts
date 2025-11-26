@@ -28,6 +28,9 @@ export class User {
   @Column({ type: 'varchar', length: 255, nullable: true })
   lastname: string;
 
+  @Column({ name: 'push_token', type: 'varchar', length: 255, nullable: true })
+  pushToken: string;
+
   @ManyToOne(() => Company, (company) => company.users, { nullable: true })
   @JoinColumn({ name: 'company_id' })
   company: Company;
