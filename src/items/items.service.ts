@@ -40,6 +40,17 @@ export class ItemsService {
     return item;
   }
 
+  async findBySku(sku: string, companyId: number): Promise<Item> {
+  const item = await this.itemsRepository.findOne({
+    where: { sku: sku, company: { companyId: companyId } },
+  });
+
+  if (!item) {
+    throw new NotFoundException(`No se encontró ningún producto con el código ${sku}`);
+  }
+  return item;
+}
+  
   async update(
     id: number,
     updateItemDto: UpdateItemDto,

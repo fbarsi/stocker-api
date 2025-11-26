@@ -44,6 +44,14 @@ export class ItemsController {
     return this.itemsService.findOneForCompany(id, req.user.companyId);
   }
 
+  @Get('sku/:sku')
+findBySku(
+  @Param('sku') sku: string,
+  @Request() req: { user: { companyId: number } },
+) {
+  return this.itemsService.findBySku(sku, req.user.companyId);
+}
+
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
