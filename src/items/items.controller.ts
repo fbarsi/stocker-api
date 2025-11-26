@@ -19,7 +19,7 @@ import { RolesGuard } from '../auth/guards/roles.guard';
 
 @Controller('items')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@SetMetadata('roles', ['Manager'])
+@SetMetadata('roles', ['Manager', 'Employee'])
 export class ItemsController {
   constructor(private readonly itemsService: ItemsService) {}
 

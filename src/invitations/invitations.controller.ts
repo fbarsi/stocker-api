@@ -34,6 +34,13 @@ export class InvitationsController {
     return this.invitationsService.findForUser(req.user.email);
   }
 
+  @Get('/sent')
+  @UseGuards(RolesGuard)
+  @SetMetadata('roles', ['Manager'])
+  getSentInvitations(@Request() req: RequestWithUser) {
+    return this.invitationsService.findSentByManager(req.user.userId);
+  }
+
   @Post('/:id/accept')
   acceptInvitation(@Param('id') id: string, @Request() req: RequestWithUser) {
     return this.invitationsService.accept(+id, req.user);

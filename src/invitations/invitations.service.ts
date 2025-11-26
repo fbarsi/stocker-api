@@ -150,4 +150,14 @@ export class InvitationsService {
     await this.invitationsRepository.save(invitation);
     return { message: 'Invitación rechazada.' };
   }
+
+  async findSentByManager(managerId: number) {
+    return this.invitationsRepository.find({
+      where: {
+        manager: { userId: managerId }, // Filtramos por la relación con el Manager
+      },
+      relations: ['branch', 'company'], // Cargamos datos útiles para mostrar en el front
+      order: { createdAt: 'DESC' }, // Las más recientes primero
+    });
+  }
 }
